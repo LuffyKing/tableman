@@ -16,7 +16,6 @@ from PIL import Image
 from PIL import ImageFilter
 import pytesseract
 from operator import itemgetter
-import imutils
 from PIL import ImageEnhance
 import sys
 import datetime as dt
@@ -26,6 +25,15 @@ from test1 import UserGUI
 #the above are the guis for textcorrection and table adjustments
 import random
 import enchant
+import os
+
+
+
+if not os.path.exists((os.path.expanduser("~/Desktop/blaze"))):
+    os.makdirs(os.path.expanduser("~/Desktop/blaze"))
+
+
+    
 def timesort(cleanneddict,timecolumn,dytw,row):#function for getting the dictionary that contains the times,days and courses
     
     pattern=re.compile(r'(\S+)([AP]M)')#pattern to find the first time in the textblock from the user(the times are gotten in the following format ('11:30','AM'))
@@ -273,23 +281,29 @@ def labreview(datalist):#puts a labreview before every lab
         
         for j in xrange(1,len(datalist)):
             if 'Lab' in datalist[j][i] and 'Review' not in datalist[j][i]:
+                listoftimes=[]
                 
                 spacelist=listofemptycells(datalist)[datalist[0][i]]
                 for k in spacelist:
-                    listoftimes=[]
+                    
                     if dt.datetime.strptime(datalist[j][0], "%I %M %p").strftime("%H %M")>dt.datetime.strptime(k, "%I %M %p").strftime("%H %M"):
                         listoftimes.append(k)
-                time=listoftimes[len(listoftimes)-1]
-                    
-                    
-                wordsoftextblock=re.findall(pattern,datalist[j][i])
-                etime=timecolumn[timecolumn.index(k)+1]
-                endtime=etime.split(' ')
-                endtime[1]='20'
-                etime=' '.join(endtime)
-                text='%s %s\n%s\n%s - %s'%(wordsoftextblock[0],wordsoftextblock[1],'Lab Review',time,etime)
-                datalist[timecolumn.index(time)][i]=text
-                datalist[timecolumn.index(time)+1][i]='place'
+
+                
+                try:
+                    time=listoftimes[len(listoftimes)-1]
+                        
+                        
+                    wordsoftextblock=re.findall(pattern,datalist[j][i])
+                    etime=timecolumn[timecolumn.index(time)+1]
+                    endtime=etime.split(' ')
+                    endtime[1]='20'
+                    etime=' '.join(endtime)
+                    text='%s %s\n%s\n%s - %s'%(wordsoftextblock[0],wordsoftextblock[1],'Lab Review',time,etime)
+                    datalist[timecolumn.index(time)][i]=text
+                    datalist[timecolumn.index(time)+1][i]='place'
+                except:
+                    pass
     return datalist
     
                 
@@ -315,65 +329,36 @@ def sobel(image):#gets a list of horizontal slices
             
 
         yont=sorted(yont,key=itemgetter(1))
-        for i in xrange(len(yont)):
+        for i in yont:
+
             
-            
-        
 
             try:
-                
-                
-                
-                chk=yont[i+1][1]-yont[i][1]
-                if chk<0:
-                    pass
+            
+                if yont[yont.index(i)+1][1]-i[1]<10:
                     
-                else:
-                    
-                    
-                    
-                    if chk>50:
-                        
-                        
-                        
-                        
+                    del yont[yont.index(i)+1]
 
-                        line.append(yont[i+1][1]-yont[i][1])
-
-
+                            
             except:
                 
-                
                 pass
+        if yont[0][1]>10 :
+                line.append(0)
+        for i in yont:
+            line.append(i[1])
+            
+            
         for i in line:
+            try:
             
-            
-            
-            
-            for j in xrange(len(yont)):
-                
-                
-                
-                
-                
-                
-                try:
-                    
-                    
-                    
-                    
-                    chk=yont[j+1][1]-yont[j][1]
-                    if chk==i:
-                        
-                        
-
-                        pictures.append(image[yont[j][1]:yont[j+1][1],0:max(width)])
+                pictures.append(image[i:line[line.index(i)+1],0:max(width)])
+            except:
+                pass
                                     
 
 
-                except:
-                    
-                    pass
+                
         return pictures
     except:
         pass
@@ -392,10 +377,10 @@ def I2c(ideal):#converts from Image to cv2
     return ideal
 
 #Sizer has to be added       
-clrim=cv2.imread('/Users/damola/Desktop/abe.png')
+clrim=cv2.imread('/Users/damola/Desktop/abe.png')#######input file here
 
 #clrim=cv2.equalizeHist(clrim)
-im = cv2.imread('/Users/damola/Desktop/abe.png',0)
+im = cv2.cvtColor(clrim,cv2.COLOR_RGB2GRAY)
 edges = cv2.Canny(im,0,250,apertureSize = 3)
 
 
@@ -478,7 +463,7 @@ for slicedpic in listofslices:
                     ideal=ideal.filter(ImageFilter.SHARPEN)
                     ideal=I2c(ideal)
                     p,ideal = cv2.threshold(ideal,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-                    cv2.imshow('win',ideal)
+                    
                     
                     ideal=c2I(ideal)
                     text=pytesseract.image_to_string(ideal)
@@ -495,8 +480,11 @@ for slicedpic in listofslices:
 for i in sec:
     count=0
     for j in sec[i]:
-        if j.isspace():
+        
+        if j.isspace() or j=='':
             sec[i][count]='destroy'
+        count=count+1
+            
     try:
         while 'destroy' in sec[i]:
             
