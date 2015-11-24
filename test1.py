@@ -282,6 +282,7 @@ class UserGUI(QWidget):
     def fixbuttonslot(self):
         self.table.clearSpans()
         self.spanner()
+        self.colorcode()
     
     def spanner(self):
         pattern=re.compile(r'(\d+):?\s?(\d+)\s?([AP]M)')
@@ -372,7 +373,8 @@ class UserGUI(QWidget):
                     if code in item.text():
                         
                         self.table.item(j,i).setBackground(QColor(codesandcolors[code]))
-                    
+                    elif item.text()=='':
+                        self.table.item(j,i).setBackground(QColor(u'white'))
                            
             
             

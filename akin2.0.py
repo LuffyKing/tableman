@@ -87,7 +87,7 @@ def timecheck(dictionary):#this checks the times
     try:
         pattern=re.compile(r'(\S+)([AP]M)')#pattern to find the first time in the textblock from the user(the times are gotten in the following format ('11:30','AM')) 
         pattern1=re.compile(r'(\w+):(\w+)')#pattern to group the time codes from the textblock into  for example (11,30) 
-        pwl=enchant.request_pwl_dict("/Users/damola/Desktop/timecodes.txt")#loads the timecode spellcheck
+        pwl=enchant.request_pwl_dict(os.path.expanduser("~/Desktop/timecodes.txt"))#loads the timecode spellcheck
         for i in dictionary:#iterates over the dictionary
             count=0
             for j in dictionary[i]:#iterates over the dictionary values for the key i
