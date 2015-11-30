@@ -96,7 +96,7 @@ def timesort(cleanneddict,timecolumn,dytw,row):#function for getting the diction
     for i in xrange(1,len(timecolumn)):#iterates over the list of times from 7AM to 12PM
         rowtime={}#a dictionary for specific timeslots in the timecolumn list, it holds all the courses taking place at a timeslot for the week
         for j in dytw:#iterate dytw to get days
-            daylist=cleaneddict[j]#list of courses taking place on day j
+            daylist=timetabledict[j]#list of courses taking place on day j
             for k in daylist:#iterate over daylist to get an individual textblock
                 try:
                 
@@ -495,7 +495,7 @@ for slicedpic in listofslices:
                 
             
         
-            if type(image)==list:
+            if type(images)==list:
                 for ideal in images:#iterates for each horizontal slice
                     index=index+1
                     ideal=c2I(ideal)#turns it from cv2 to Image picture file
@@ -507,17 +507,17 @@ for slicedpic in listofslices:
                     
                     
                     ideal=c2I(ideal)#turns it from cv2 to Image picture file
-                    text=pytesseract.image_to_string(ideal))#this only works with an image file hence the conversion
+                    text=pytesseract.image_to_string(ideal)#this only works with an image file hence the conversion
                     text=text.decode('utf-8').encode(errors='replace').replace('?',' ')
                     textblks.append(text)#creates a list of textblocks for the day in question
                 timetabledict[day]=textblks#assigns the list of textblocks to the day in the dictionary as the value for the key day
                 
 for i in timetabledict:#removes spaces
     count=0
-    for j in sec[i]:
+    for j in timetabledict[i]:
         
         if j.isspace() or j=='':
-            sec[i][count]='destroy'
+            timetabledict[i][count]='destroy'
         count=count+1
             
     try:
@@ -531,9 +531,9 @@ for i in timetabledict:#removes spaces
 		
           
 
-gui=TextCorrectionGUI(sec)
-sec=gui.sec11()    
-seckeys=sec.keys()
+gui=TextCorrectionGUI(timetabledict)
+timetabledict=gui.sec11()    
+seckeys=timetabledict.keys()
 timetabledict['Sunday']=[]
 try:
     timetabledict['Saturday']
