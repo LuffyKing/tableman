@@ -10,7 +10,6 @@ from PIL import ImageFilter
 import pytesseract
 from operator import itemgetter
 import datetime as dt
-#
 from test1 import TextCorrectionGUI
 from test1 import UserGUI
 #the above are the guis for textcorrection and table adjustments
