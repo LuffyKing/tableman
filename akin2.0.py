@@ -113,11 +113,7 @@ def timesort(cleanneddict,timecolumn,dytw,row):#function for getting the diction
 
         row[timecolumn[i]]=rowtime#this is a dictionary that takes the rowtime dictionary as the value and atimeslot as the key
     return row
-"""
-def ccspacecheck(dictionary):
-    if
-"""
-    
+  
 def ccchecker(dictionary):
     try:
         #the goal is to make sure all the course codes are correct
@@ -243,18 +239,6 @@ def lecturereview(datalist):#places lecture reviews after every lecture
 
                         break
     return datalist
-    
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                
-    
 
 def weeekendstudy(datalist):#creates a weekend study plan
     
@@ -430,34 +414,34 @@ def I2c(ideal):#converts from Image to cv2
     ideal= cv2.cvtColor(ideal,cv2.COLOR_RGB2GRAY)
     return ideal
 
-#Sizer has to be added       
+#Sizer to be added      
 clrim=cv2.imread('/Users/damola/Desktop/abe.png')#######input file here
 
-#clrim=cv2.equalizeHist(clrim)
-im = cv2.cvtColor(clrim,cv2.COLOR_RGB2GRAY)
-edges = cv2.Canny(im,0,250,apertureSize = 3)
+
+im = cv2.cvtColor(clrim,cv2.COLOR_RGB2GRAY)#converts from RGB to GRAY so that edges can be detected by cv2 
+edges = cv2.Canny(im,0,250,apertureSize = 3)#uses canny edge detection to getting all the edges in the photo
 
 
 #slices up the image vertically
 indx=0
-lines = cv2.HoughLinesP(edges,1,np.pi,150, minLineLength = 100, maxLineGap = 10)
+lines = cv2.HoughLinesP(edges,1,np.pi,150, minLineLength = 100, maxLineGap = 10)#uses probabilistic hough transforms to get horizontal and vertical lines in an image, output is the coordinates of those lines
 y=[]
-for x1,y1,x2,y2 in lines[0]:
+for x1,y1,x2,y2 in lines[0]:#iterates the line list to get the vertical coordinates so the length of the photo can be determined
     y.append(y1)
     y.append(y2)
-bottom=max(y)
+bottom=max(y)#gets the vertical length of the photo
 lister=[]
-for i in lines[0]:
+for i in lines[0]:#iterates the line list to get the coordinates,this is done so that a list with the first lines as the first elements can be produced through sorting
     lister.append((i[0],i[1],i[2],i[3]))
 lister.sort()
 ind1=0
-for i in lister:
+for i in lister:#removes the noisy vertical lines
     ind=-1
     for j in lister:
             
         ind=ind+1
         if type(j)!=str and type(i)!=str:
-            if ind!=ind1 and ind>ind1 and j[0]-i[0]<100:
+            if ind!=ind1 and ind>ind1 and j[0]-i[0]<100:#makes sure the lines being removed are not pivotal lines
                 lister[ind]='destroy'
     ind1=ind1+1
 
@@ -468,8 +452,9 @@ try:
 except:
     pass
 ind=0
-listofslices=[]   
-for i in lister:
+listofslices=[]
+#end goal of above code ||S|WFR |ENG|--> |SWFR ENG|   
+for i in lister:#this cuts up the image using the vertical coordinates of each pivotal line from the lister list which has been cleaned of noisy lines
     ind=ind+1
     try:
         name='/Users/damola/Desktop/blaze/point%s.tiff'%(ind)
@@ -479,61 +464,55 @@ for i in lister:
 
     except IndexError:
         pass
+"""
+Vertical slicer can be improved by using sobel to blur out horizontal lines before putting it into the canny edge detector
+"""
 ##########
 
 dayweek=['Mond','Tues','Wedn','Thur','Frid','Satu']
-sec={}
+timetabledict={}
 #takes the slices and put the text in the dictionary sec
 for slicedpic in listofslices:
     
-    text=pytesseract.image_to_string(Image.open(slicedpic))
+    text=pytesseract.image_to_string(Image.open(slicedpic))#gets the text out of an image
     
-    text=text.decode('utf-8').encode(errors='replace').replace('?',' ')
+    text=text.decode('utf-8').encode(errors='replace').replace('?',' ')#replaces any funny characters
    
     inde=0
-    for day in dayweek:
+    for day in dayweek:#iterates for each day
         inde=inde+1
 
-        if day in text:
+        if day in text:#checks for the day in the text from the picture
             index=0
 
             headers=[]
             textblks=[]
-            picture = cv2.imread(slicedpic,0)
+            picture = cv2.imread(slicedpic,0)#reads the image from the folder blaze,sliced pic is the address of the vertical slice
+
             
-            #ideal=cv2.fastNlMeansDenoising(ideal)
-            try:
-                images=sobel(picture)
+            images=sobel(picture)#gets the horizontal slices
                 
                 
-            except:
-                pass
+            
         
-            try:
-                for ideal in images:
+            if type(image)==list:
+                for ideal in images:#iterates for each horizontal slice
                     index=index+1
-                    ideal=c2I(ideal)
-                    ideal=ideal.filter(ImageFilter.SHARPEN)
-                    ideal=I2c(ideal)
+                    ideal=c2I(ideal)#turns it from cv2 to Image picture file
+                    ideal=ideal.filter(ImageFilter.SHARPEN)#this only works with an image file hence the conversion
+                    ideal=I2c(ideal)#turns it back so that cv2 operations can continue
                     
                     
-                    p,ideal = cv2.threshold(ideal,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+                    p,ideal = cv2.threshold(ideal,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)#turns it black and white using an optimal threshold value determined automatically
                     
                     
-                    ideal=c2I(ideal)
-                    text=pytesseract.image_to_string(ideal)
+                    ideal=c2I(ideal)#turns it from cv2 to Image picture file
+                    text=pytesseract.image_to_string(ideal))#this only works with an image file hence the conversion
                     text=text.decode('utf-8').encode(errors='replace').replace('?',' ')
-                    textblks.append(text)
-                sec[day]=textblks
+                    textblks.append(text)#creates a list of textblocks for the day in question
+                timetabledict[day]=textblks#assigns the list of textblocks to the day in the dictionary as the value for the key day
                 
-            except:
-                pass
- 
-
-
-
-
-for i in sec:
+for i in timetabledict:#removes spaces
     count=0
     for j in sec[i]:
         
@@ -542,37 +521,27 @@ for i in sec:
         count=count+1
             
     try:
-        while 'destroy' in sec[i]:
+        while 'destroy' in timetabledict[i]:
             
-            del sec[i][sec[i].index('destroy')]
+            del timetabledict[i][timetabledict[i].index('destroy')]
         
     except:
         pass
             
 		
           
-"""       
-sec=ccchecker(sec)
-sec=timecheck(sec)
-"""
 
 gui=TextCorrectionGUI(sec)
 sec=gui.sec11()    
-
-
-
 seckeys=sec.keys()
-
-cleaneddict=sec
-
-cleaneddict['Sunday']=[]
+timetabledict['Sunday']=[]
 try:
-    cleaneddict['Saturday']
+    timetabledict['Saturday']
 except:
-    cleaneddict['Saturday']=[]
+    timetabledict['Saturday']=[]
 timetable=[]
 timecolumn=['Time']
-for i in xrange(7,24):#creates a time column full of time slots such as 7:00 and 7:30
+for i in xrange(7,24):#creates a time column full of time slots such as 7 00 AM
 	timecolumn.append(dt.time(i).strftime('%I %M %p'))
 	timecolumn.append(dt.time(i,30).strftime('%I %M %p'))
 	if i==23:
@@ -580,16 +549,11 @@ for i in xrange(7,24):#creates a time column full of time slots such as 7:00 and
 dytw=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']#List of the days of the week
 
 data= [[timecolumn[0], dytw[0], dytw[1], dytw[2], dytw[3],dytw[4],dytw[5],dytw[6]]]
-
-
-
-row={}
-               
-                
-                
+row={}                
 rowfinal=[]
-row=timesort(cleaneddict,timecolumn,dytw,row)
-for i in xrange(1,len(timecolumn)):#the for loop creates the data list
+row=timesort(timetabledict,timecolumn,dytw,row)
+
+for i in xrange(1,len(timecolumn)):#the for loop creates the data list which will hold the timetable values
     rowfinal=[timecolumn[i]]
     for j in dytw:
 
