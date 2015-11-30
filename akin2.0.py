@@ -533,7 +533,6 @@ for i in timetabledict:#removes spaces
 
 gui=TextCorrectionGUI(timetabledict)
 timetabledict=gui.sec11()    
-seckeys=timetabledict.keys()
 timetabledict['Sunday']=[]
 try:
     timetabledict['Saturday']
