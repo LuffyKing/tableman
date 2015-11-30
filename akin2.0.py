@@ -1,12 +1,8 @@
 import time as timing
 starttime=timing.time()
-"""
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter,A4,landscape
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from reportlab.lib.units import inch
-"""
-#reportlab libraries for creating a pdf timetable
+from icalendar import Calendar,Event,Alarm
+from datetime import datetime
+from icalendar import LocalTimezone
 import re
 import datetime as dt
 from random import randint
@@ -33,7 +29,65 @@ if not os.path.exists((os.path.expanduser("~/Desktop/blaze"))):
     os.makdirs(os.path.expanduser("~/Desktop/blaze"))
 
 
-    
+def icsfilemaker(data):
+	cal=Calendar()
+	cal.add('version','2.0')
+	cal.add('prodid','-//cal test//studybuddy.com//')
+	daterule=dt.datetime.now()
+	pattern=re.compile(r'(\S+)([AP]M)')#pattern to find the first time in the textblock from the user(the times are gotten in the following format ('11:30','AM'))
+	pattern1=re.compile(r'(\d+)')#pattern to get the first two digits in a timeslot(i.e. the 11 from 11:30 )
+	daysrc=['MO','TU','WE','TH','FR','SA','SU']
+	pattern2=re.compile(r'(\S+)\s+(\S+)\s+([AP]M)')
+	for i in xrange(1,len(data)):
+		for j in xrange(1,len(data[0])):
+			if data[i][j]!='' and not(data[i][j].isspace()) and  data[i][j]!='place':
+			
+				if re.findall(pattern,data[i][j]):
+			
+
+					timeslot=re.findall(pattern,data[i][j])#gets the time from the textblock
+				
+				elif re.findall(pattern2,data[i][j]):
+					timeslot=re.findall(pattern2,data[i][j])
+					count=0
+					for a in timeslot:
+						timeslot[count]=('%d:%s'%(int(a[0]),a[1]),a[2])
+						count=count+1
+			
+
+			
+			
+				if len(timeslot)==2:
+					#hour=int(re.search(pattern1,timeslot[0][0]).group())
+					minutes=int(re.findall(pattern1,timeslot[0][0])[1])
+					nlsplit=data[i][j].split('\n')
+					
+				
+					dur=dt.datetime.strptime('%s%s'%(timeslot[1][0],timeslot[1][1]), "%I:%M%p")-dt.datetime.strptime('%s%s'%(timeslot[0][0],timeslot[0][1]), "%I:%M%p")
+					hour=dt.datetime.strptime('%s%s'%(timeslot[0][0],timeslot[0][1]), "%I:%M%p").hour
+					event=Event()
+					alarm=Alarm()
+					event.add('dtstart',daterule)
+					event.add('exdate',daterule)
+					event.add('rrule',{'FREQ':'WEEKLY','BYDAY':daysrc[j-1],'BYHOUR':hour,'BYMINUTE':minutes,'BYSECOND':0,'UNTIL':datetime(2015,12,30,23,59,59)})
+					event.add('summary','%s\r\n%s'%(nlsplit[0],nlsplit[1]))
+					alarm['trigger']='-PT30M'
+					alarm['repeat']=3
+					alarm['duration']=10
+					alarm['action']='Display'
+					alarm['Description']='Time for %s %s'%(nlsplit[0],nlsplit[1])
+					event.add_component(alarm)
+					if 'AM' not in nlsplit[len(nlsplit)-1] and 'PM' not in nlsplit[len(nlsplit)-1] and ':'  not in nlsplit[len(nlsplit)-1]:
+						event.add('location',nlsplit[len(nlsplit)-1])
+				
+					event['duration']='PT%dH%dM'%(int(dur.total_seconds()//3600),int((dur.total_seconds()//60)%60))
+
+					cal.add_component(event)
+
+	file=open('/Users/damola/Desktop/cal.ics','w+')
+	file.write(cal.to_ical())
+	file.close()
+  
 def timesort(cleanneddict,timecolumn,dytw,row):#function for getting the dictionary that contains the times,days and courses
     
     pattern=re.compile(r'(\S+)([AP]M)')#pattern to find the first time in the textblock from the user(the times are gotten in the following format ('11:30','AM'))
@@ -458,10 +512,11 @@ for slicedpic in listofslices:
             try:
                 for ideal in images:
                     index=index+1
-                    
                     ideal=c2I(ideal)
                     ideal=ideal.filter(ImageFilter.SHARPEN)
                     ideal=I2c(ideal)
+                    
+                    
                     p,ideal = cv2.threshold(ideal,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
                     
                     
@@ -470,6 +525,7 @@ for slicedpic in listofslices:
                     text=text.decode('utf-8').encode(errors='replace').replace('?',' ')
                     textblks.append(text)
                 sec[day]=textblks
+                
             except:
                 pass
  
@@ -494,11 +550,12 @@ for i in sec:
         pass
             
 		
-            
+          
 """       
 sec=ccchecker(sec)
 sec=timecheck(sec)
 """
+
 gui=TextCorrectionGUI(sec)
 sec=gui.sec11()    
 
@@ -591,6 +648,7 @@ for i in xrange(1,len(data)):#this for loop creates the placeholders that serve 
 
                         hdist=k-i
                         count=0
+                        
                         for m in xrange(hdist):
                             count=count+1
                             data[i+count][j]='place'
@@ -598,20 +656,8 @@ for i in xrange(1,len(data)):#this for loop creates the placeholders that serve 
 data=labreview(data)
 data=lecturereview(data)
 data=weeekendstudy(data)
-
 user=UserGUI(data)
-
-"""
-story=Table(data)
-
-
-elements=[]                                                                            
-story.setStyle(TableStyle([('GRID', (0,0), (-1,-1), 0.25, colors.black)]))
-story.setStyle([('ALIGN',(0,0),(-1,-1),'CENTER'),('VALIGN',(0,0),(-1,-1),'MIDDLE')])
-elements.append(story)
-doc = SimpleDocTemplate("/Users/damola/Desktop/simple_table_grid.pdf", pagesize=(1500,1500))
-
-doc.build(elements)
-"""
+icsfilemaker(user.data)
 endtime=timing.time()
 print '%f s to run program'%(endtime-starttime)
+

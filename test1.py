@@ -43,9 +43,6 @@ class TextCorrectionGUI(QWidget):
     def resetbuttonslot(self):
         self.table.clearContents()
        
-        
-                
-                
         self.tablefill()
         
         
@@ -425,7 +422,7 @@ class UserGUI(QWidget):
         self.fixbutton=QPushButton('Fix')
         self.fixbutton.clicked.connect(self.fixbuttonslot)
 
-                  
+    
     def UGUI(self):
         
         self.setWindowTitle('Display')
@@ -434,9 +431,7 @@ class UserGUI(QWidget):
         lrow=len(timecolumn)
         self.table.setColumnCount(len(dytw))
         self.table.setRowCount(lrow-1)
-        
         self.table.setHorizontalHeaderLabels(dytw)
-        
         self.tablefill()
         self.table.horizontalHeader().setResizeMode(QHeaderView.Stretch)
         self.table.verticalHeader().setResizeMode(QHeaderView.Stretch)
@@ -467,6 +462,7 @@ class UserGUI(QWidget):
         self.vbox.addLayout(self.hbox)
         
         self.setLayout(self.vbox)
+        
 
         
 
