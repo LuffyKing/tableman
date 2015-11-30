@@ -2,18 +2,13 @@ import time as timing
 starttime=timing.time()
 from icalendar import Calendar,Event,Alarm
 from datetime import datetime
-from icalendar import LocalTimezone
 import re
-import datetime as dt
-from random import randint
 import numpy as np
 import cv2
 from PIL import Image
 from PIL import ImageFilter
 import pytesseract
 from operator import itemgetter
-from PIL import ImageEnhance
-import sys
 import datetime as dt
 #
 from test1 import TextCorrectionGUI
@@ -26,7 +21,7 @@ import os
 
 
 if not os.path.exists((os.path.expanduser("~/Desktop/blaze"))):
-    os.makdirs(os.path.expanduser("~/Desktop/blaze"))
+    os.mkdir(os.path.expanduser("~/Desktop/blaze"))
 
 
 def icsfilemaker(data):
