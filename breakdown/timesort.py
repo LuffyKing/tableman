@@ -1,7 +1,7 @@
 
 import re
 
-def timesort(cleanneddict,timecolumn,dytw,row):#function for getting the dictionary that contains the times,days and courses
+def timesort(timetabledict,timecolumn,dytw,row):#function for getting the dictionary that contains the times,days and courses
 
     pattern=re.compile(r'(\S+)([AP]M)')#pattern to find the first time in the textblock from the user(the times are gotten in the following format ('11:30','AM'))
     pattern1=re.compile(r'(\d+)')#pattern to get the first two digits in a timeslot(i.e. the 11 from 11:30 AM)
