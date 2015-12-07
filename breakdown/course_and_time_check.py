@@ -1,6 +1,6 @@
 
 import re
-
+import enchant
 def ccchecker(dictionary):
     try:
         #the goal is to make sure all the course codes are correct

@@ -1,6 +1,10 @@
 import re
+import random
+from empty_cell_finders import listofemptycells
+from empty_cell_finders import listofemptycells2
+import datetime as dt
 
-def lecturereview(datalist):#places lecture reviews after every lecture
+def lecturereview(datalist,timecolumn):#places lecture reviews after every lecture
     pattern=re.compile(r'\w+')
     for i in xrange(1,len(datalist[0])):
 
@@ -29,7 +33,7 @@ def lecturereview(datalist):#places lecture reviews after every lecture
 
 
 
-def weeekendstudy(datalist):#creates a weekend study plan
+def weeekendstudy(datalist,timecolumn):#creates a weekend study plan
 
     pattern=re.compile(r'\w+')
     pattern2=re.compile(r'.+\d\w+')
@@ -43,7 +47,7 @@ def weeekendstudy(datalist):#creates a weekend study plan
 
             if 'Lecture' in datalist[j][i] and 'Review' not in datalist[j][i]:
 
-                text=re.findall(pattern2,data[j][i])[0]
+                text=re.findall(pattern2,datalist[j][i])[0]
                 try:
 
                     listtext.index(text)
@@ -101,7 +105,7 @@ def weeekendstudy(datalist):#creates a weekend study plan
 
 
 
-def labreview(datalist):#puts a labreview before every lab
+def labreview(datalist,timecolumn):#puts a labreview before every lab
     pattern=re.compile(r'\w+')
     for i in xrange(1,len(datalist[0])):
 

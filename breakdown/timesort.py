@@ -24,5 +24,5 @@ def timesort(cleanneddict,timecolumn,dytw,row):#function for getting the diction
 
 
 
-        row[timecolumn[i]]=rowtime#this is a dictionary that takes the rowtime dictionary as the value and atimeslot as the key
+        row[timecolumn[i]]=rowtime#this is a dictionary that takes the rowtime dictionary as the value and a timeslot as the key
     return row
