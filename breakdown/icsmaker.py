@@ -47,8 +47,8 @@ def icsfilemaker(data):
 					event.add('summary','%s\r\n%s'%(nlsplit[0],nlsplit[1]))#adds a title for each text block
 					alarm['trigger']='-PT30M'#triggers 30 mins before 3 times at 10 min intervals and displays the message in the description
 					alarm['repeat']=3
-					alarm['duration']=10
-					alarm['action']='Display'
+					alarm['duration']='PT10M'
+					alarm['action']='DISPLAY'
 					alarm['Description']='Time for %s %s'%(nlsplit[0],nlsplit[1])#Time for SWFR 3MX3 Lecture
 					event.add_component(alarm)#adds the alarm to the event
 					if 'AM' not in nlsplit[len(nlsplit)-1] and 'PM' not in nlsplit[len(nlsplit)-1] and ':'  not in nlsplit[len(nlsplit)-1]:#adds the location which should be the last sentence, if it is not the last sentence it is not added
