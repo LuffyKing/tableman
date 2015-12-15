@@ -1,7 +1,7 @@
 import sys
-import datetime as dt
+
 from PySide.QtGui import *
-from PySide import QtGui, QtCore
+from PySide import QtCore
 from PySide.QtCore import *
 import re
 import datetime as dt
