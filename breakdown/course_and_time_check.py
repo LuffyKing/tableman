@@ -35,12 +35,14 @@ def timecheck(dictionary):#this checks the times
                     if re.search(pattern,j):#checks if the search is valid then allows the code below to run
                             length=re.findall(pattern,j)#finds all the times in the textblock
                             if len(length)==1:#if the AM or PM are not spelt correctly this corrects it
-                                AMPM=length[0][1]
+                                AMPM=length[0][1]#AM or PM
 
-                                listoftimes=re.findall(pattern1,j)
+                                listoftimes=re.findall(pattern1,j)#group the time codes from the textblock into  for example (11,30)
                                 listoftimes1=listoftimes[0][1]
+                                print listoftimes1
                                 listoftimes2=listoftimes[1][1]
                                 time1=pwl.suggest(listoftimes1)
+                                print time1
                                 time2=pwl.suggest(listoftimes2)
                                 if len(time1)==2:
                                     for k in time1:
