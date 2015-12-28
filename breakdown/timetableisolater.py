@@ -84,7 +84,7 @@ def isolate(image):
            
     x,y,w,h =bbox[0]#retrieving the timetable
     
-    roi2=clr[y:y+h,x:x+w]#slices up the timetable away from the rest of the image
+    roi2=image[y:y+h,x:x+w]#slices up the timetable away from the rest of the image
     return roi2
     #cv2.imwrite('/Users/damola/Desktop/aloisi.tiff',roi2)#writes it to a file
     
