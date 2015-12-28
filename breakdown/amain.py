@@ -16,6 +16,7 @@ from vertical_slicer import vertslice
 from timesort import timesort
 from studyplanner import labreview,lecturereview,weeekendstudy
 from icsmaker import icsfilemaker
+from timetableisolater import isolate
 
 if not os.path.exists((os.path.expanduser("~/Desktop/blaze"))):
     os.mkdir(os.path.expanduser("~/Desktop/blaze"))
@@ -31,6 +32,7 @@ def I2c(ideal):#converts from Image to cv2
     return ideal
 
 clrim=cv2.imread('/Users/damola/Desktop/abe.png')#######input file here
+clrim=isolate(clrim)
 
 
 im = cv2.cvtColor(clrim,cv2.COLOR_RGB2GRAY)#converts from RGB to GRAY so that edges can be detected by cv2
